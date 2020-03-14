@@ -98,6 +98,11 @@ async function buildCardInner (wordId) {
     <div class="detail">
       ${renderDetails(details, subdetails)}
     </div>
+
+    <div class="btns">
+      <a class="btn" href="${`https://www.mojidict.com/details/${wordId}`}" target="_blank">詳情</a>
+      <a class="btn" href="${`https://www.mojidict.com/zh-hans/searchText/${encodeURIComponent(word.spell)}`}" target="_blank">更多</a>
+    </div>
   `
 }
 

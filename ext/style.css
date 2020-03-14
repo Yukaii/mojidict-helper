@@ -5,7 +5,6 @@
 
   width: 300px;
   min-width: 150px;
-  min-height: 200px;
   max-height: 350px;
   overflow-y: auto;
   position: fixed;
@@ -50,4 +49,21 @@
   padding: 0 8px;
   color: #71757b;
   margin-bottom: 8px;
+}
+
+.mojidict-helper-card .btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: #fff;
+  width: 100%;
+  border-top: 1px solid #d9d9d9;
+  padding-top: 10px;
+}
+
+.mojidict-helper-card .btn {
+  color: #606266;
+  font-size: 14px;
+  background-color: white !important;
+  border: none !important;
 }
