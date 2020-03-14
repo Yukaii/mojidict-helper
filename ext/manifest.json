@@ -7,10 +7,6 @@
   "permissions": [
     "activeTab"
   ],
-  "optional_permissions": [
-    "http://*/",
-    "https://*/"
-  ],
   "content_scripts": [
     {
       "matches": [
