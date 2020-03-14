@@ -1,4 +1,4 @@
-# MOJiDict Helper
+# MOJiDict Helper - 日文字典的瀏覽器擴充功能
 
 ![screenshot](./docs/images/Brand_GitHub.png)
 
