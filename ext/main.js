@@ -125,6 +125,10 @@ document.addEventListener('dblclick', async () => {
   const res = await search(selectionText)
 
   if (res.result && res.result.searchResults.length > 0) {
-    showWordCard(res.result.searchResults[0].tarId, selection.getRangeAt(0).getBoundingClientRect())
+    if (res.result.searchResults.filter(r => r.type === 0).length > 0) {
+      showWordCard(res.result.searchResults[0].tarId, selection.getRangeAt(0).getBoundingClientRect())
+    } else {
+      // TODO: render web search results
+    }
   }
 })
