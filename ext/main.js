@@ -46,12 +46,85 @@ const search = searchText => channel.send('search', { searchText })
 const fetchWord = wordId => channel.send( 'fetchWord', { wordId })
 // #endregion
 
-document.ondblclick = function () {
-  const selection = window.getSelection()
-  const selectionText = selection.toString()
+function getWordCardContainer () {
+  return document.querySelector('.mojidict-helper-card-container')
+}
 
-  search(selectionText).then(res => console.log(res))
+function setupWordCardContainer () {
+  if (!getWordCardContainer()) {
+    const div = document.createElement('div')
+    div.className = 'mojidict-helper-card-container'
+
+    document.body.appendChild(div)
+  }
+}
+
+setupWordCardContainer()
+
+async function showWordCard (wordId, rect) {
+  const container = getWordCardContainer()
+
+  const div = document.createElement('div')
+
+  div.className = 'mojidict-helper-card'
+  div.innerHTML = await buildCardInner(wordId)
+  div.style.cssText = `
+    top: ${rect.top + rect.height}px;
+    left: ${rect.left}px;
+  `
+
+  container.innerHTML = ''
+  container.appendChild(div)
+
+  registerCardEvent(div)
+}
+
+async function buildCardInner (wordId) {
+  const { result: { word, details, subdetails } } = await fetchWord(wordId)
+
+  const renderDetails = (details, subdetails) => details.map(detail => {
+    const subDetails = subdetails.filter(sub => sub.detailsId === detail.objectId)
+
+    return `<span class="detail-title" title="${detail.title}">${detail.title}</span>
+
+      ${subDetails.map((subdetail, index) => `<p title="${subdetail.title}">${index + 1}. ${subdetail.title}</p>`).join('')}
+      `
+  }).join('')
+
+  return `
+    <h3 title="${word.spell}">${word.spell}</h3>
+    <h4>${word.spell} | ${word.pron} ${word.accent}</h4>
+
+    <div class="detail">
+      ${renderDetails(details, subdetails)}
+    </div>
+  `
+}
+
+function registerCardEvent (card) {
+  const dismiss = function (event) {
+    if (!card.contains(event.target)) {
+      card.remove()
+      document.removeEventListener('click', dismiss)
+    }
+  }
+  const onScroll = function () {
+    card.remove()
+    document.removeEventListener('scroll', onScroll)
+  }
+
+  document.addEventListener('click', dismiss)
+  document.addEventListener('scroll', onScroll)
 }
 
 
+document.addEventListener('dblclick', async () => {
+  const selection = window.getSelection()
+  const selectionText = selection.toString()
 
+  const res = await search(selectionText)
+
+  if (res.result && res.result.searchResults.length > 0) {
+    showWordCard(res.result.searchResults[0].tarId, selection.getRangeAt(0).getBoundingClientRect())
+  }
+})

@@ -17,6 +17,9 @@
         "http://*/*",
         "https://*/*"
       ],
+      "exclude_matches": [
+        "https://*.mojidict.com/*"
+      ],
       "css": ["style.css"],
       "js": ["main.js"]
     }

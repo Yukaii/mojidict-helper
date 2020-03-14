@@ -1,0 +1,53 @@
+.mojidict-helper-card {
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+
+  width: 300px;
+  min-width: 150px;
+  min-height: 200px;
+  max-height: 350px;
+  overflow-y: auto;
+  position: fixed;
+
+  padding: 15px;
+  border: 1px solid #ebeef5;
+  padding: 12px;
+  z-index: 2000;
+  color: #606266;
+  line-height: 1.4;
+  text-align: justify;
+  font-size: 14px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  word-break: break-all;
+}
+
+.mojidict-helper-card h3 {
+  font-size: 20px;
+  margin: 0 0 10px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.mojidict-helper-card h4 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.mojidict-helper-card .detail {
+  padding-bottom: 12px;
+  font-size: 14px;
+}
+
+.mojidict-helper-card .detail p {
+  margin: 0 0 6px;
+}
+
+.mojidict-helper-card .detail-title {
+  display: inline-block;
+  border: 1px solid #a4a4a5;
+  border-radius: 10px;
+  padding: 0 8px;
+  color: #71757b;
+  margin-bottom: 8px;
+}
