@@ -1,6 +1,6 @@
 // #region MojiDict API proxied with background script
 class Channel {
-  constructor (port) {
+  constructor(port) {
     this.messageId = 0
     this.promises = {}
 
@@ -43,7 +43,7 @@ class Channel {
 const channel = new Channel('mojidict-api')
 
 const search = searchText => channel.send('search', { searchText })
-const fetchWord = wordId => channel.send( 'fetchWord', { wordId })
+const fetchWord = wordId => channel.send('fetchWord', { wordId })
 // #endregion
 
 function getWordCardContainer () {
