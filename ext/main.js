@@ -1,6 +1,6 @@
 // #region MojiDict API proxied with background script
 class Channel {
-  constructor (port) {
+  constructor(port) {
     this.messageId = 0
     this.promises = {}
 
@@ -43,7 +43,7 @@ class Channel {
 const channel = new Channel('mojidict-api')
 
 const search = searchText => channel.send('search', { searchText })
-const fetchWord = wordId => channel.send( 'fetchWord', { wordId })
+const fetchWord = wordId => channel.send('fetchWord', { wordId })
 // #endregion
 
 function getWordCardContainer () {
@@ -100,8 +100,8 @@ async function buildCardInner (wordId) {
     </div>
 
     <div class="btns">
-      <a class="btn" href="${`https://www.mojidict.com/details/${wordId}`}" target="_blank">詳情</a>
-      <a class="btn" href="${`https://www.mojidict.com/zh-hans/searchText/${encodeURIComponent(word.spell)}`}" target="_blank">更多</a>
+      <a class="btn" href="${`https://www.mojidict.com/zh-hant/details/${wordId}`}" target="_blank">詳情</a>
+      <a class="btn" href="${`https://www.mojidict.com/zh-hant/searchText/${encodeURIComponent(word.spell)}`}" target="_blank">更多</a>
     </div>
   `
 }
