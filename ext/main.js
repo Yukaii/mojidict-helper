@@ -92,16 +92,20 @@ async function buildCardInner (wordId) {
   }).join('')
 
   return `
-    <h3 title="${word.spell}">${word.spell}</h3>
-    <h4>${word.spell} | ${word.pron} ${word.accent}</h4>
+    <div class="close-button"></div>
 
-    <div class="detail">
-      ${renderDetails(details, subdetails)}
+    <div class="word-detail-container">
+      <div class="word-title" title="${word.spell}">${word.spell}</div>
+      <div class="word-spell">${word.spell} | ${word.pron} ${word.accent}</div>
+
+      <div class="word-detail">
+        ${renderDetails(details, subdetails)}
+      </div>
     </div>
 
-    <div class="btns">
-      <a class="btn" href="${`https://www.mojidict.com/zh-hant/details/${wordId}`}" target="_blank">詳情</a>
-      <a class="btn" href="${`https://www.mojidict.com/zh-hant/searchText/${encodeURIComponent(word.spell)}`}" target="_blank">更多</a>
+    <div class="button-group">
+      <a class="moji-button" href="${`https://www.mojidict.com/zh-hant/details/${wordId}`}" target="_blank">詳情</a>
+      <a class="moji-button" href="${`https://www.mojidict.com/zh-hant/searchText/${encodeURIComponent(word.spell)}`}" target="_blank">更多</a>
     </div>
   `
 }

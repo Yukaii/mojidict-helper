@@ -1,7 +1,7 @@
 .mojidict-helper-card {
   background-color: white;
   color: black;
-  border-radius: 4px;
+  border-radius: 10px;
 
   width: 300px;
   min-width: 150px;
@@ -9,9 +9,7 @@
   overflow-y: auto;
   position: fixed;
 
-  padding: 15px;
   border: 1px solid #ebeef5;
-  padding: 12px;
   z-index: 2000;
   color: #606266;
   line-height: 1.4;
@@ -21,24 +19,58 @@
   word-break: break-all;
 }
 
-.mojidict-helper-card h3 {
+.mojidict-helper-card .close-button {
+  display: block;
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  top: 12px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.mojidict-helper-card .close-button:before,
+.mojidict-helper-card .close-button:after {
+  content: '';
+  width: 12px;
+  height: 1px;
+  background-color: #606266;
+  position: absolute;
+  top: 6px;
+  right: 0;
+}
+
+.mojidict-helper-card .close-button:before {
+  transform: rotate(45deg);
+}
+.mojidict-helper-card .close-button:after {
+  transform: rotate(-45deg);
+}
+
+.mojidict-helper-card .word-detail-container {
+  padding: 12px 12px 0;
+}
+
+.mojidict-helper-card .word-title {
   font-size: 20px;
   margin: 0 0 10px;
-  font-weight: 500;
+  font-weight: bold;
   display: inline-block;
+  text-align: left;
 }
 
-.mojidict-helper-card h4 {
+.mojidict-helper-card .word-spell {
   margin: 0 0 6px;
   font-size: 18px;
+  text-align: left;
 }
 
-.mojidict-helper-card .detail {
+.mojidict-helper-card .word-detail {
   padding-bottom: 12px;
   font-size: 14px;
 }
 
-.mojidict-helper-card .detail p {
+.mojidict-helper-card .word-detail p {
   margin: 0 0 6px;
 }
 
@@ -51,19 +83,31 @@
   margin-bottom: 8px;
 }
 
-.mojidict-helper-card .btns {
+.mojidict-helper-card .button-group {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   background-color: #fff;
   width: 100%;
   border-top: 1px solid #d9d9d9;
-  padding-top: 10px;
 }
 
-.mojidict-helper-card .btn {
+.mojidict-helper-card .moji-button {
   color: #606266;
   font-size: 14px;
-  background-color: white !important;
-  border: none !important;
+  background-color: white;
+  cursor: pointer;
+
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.mojidict-helper-card .moji-button:first-child {
+  border-right: 1px solid #d9d9d9;
+}
+
+.mojidict-helper-card .moji-button:hover {
+  color: #ff4a42;
+  text-decoration: none;
 }
