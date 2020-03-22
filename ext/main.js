@@ -1,6 +1,6 @@
 // #region MojiDict API proxied with background script
 class Channel {
-  constructor(port) {
+  constructor (port) {
     this.messageId = 0
     this.promises = {}
 
@@ -69,8 +69,7 @@ async function showWordCard (wordId, rect) {
   div.className = 'mojidict-helper-card'
   div.innerHTML = await buildCardInner(wordId)
   div.style.cssText = `
-    top: ${rect.top + rect.height}px;
-    left: ${rect.left}px;
+    transform: translate(${rect.left + window.pageXOffset}px, ${rect.top + rect.height + window.pageYOffset}px);
   `
 
   container.innerHTML = ''
@@ -117,15 +116,11 @@ function registerCardEvent (card) {
       document.removeEventListener('click', dismiss)
     }
   }
-  const onScroll = function () {
-    card.remove()
-    document.removeEventListener('scroll', onScroll)
-  }
+
+  card.querySelector('.close-button').addEventListener('click', dismiss)
 
   document.addEventListener('click', dismiss)
-  document.addEventListener('scroll', onScroll)
 }
-
 
 document.addEventListener('dblclick', async () => {
   const selection = window.getSelection()

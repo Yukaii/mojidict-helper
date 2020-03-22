@@ -16,8 +16,8 @@ const cachedFn = (fn) => {
 
 // #region MojiDict API
 const basePayload = {
-  "_ApplicationId": "E62VyFVLMiW7kvbtVq3p",
-  "_ClientVersion": "js2.10.0",
+  '_ApplicationId': 'E62VyFVLMiW7kvbtVq3p',
+  '_ClientVersion': 'js2.10.0'
 }
 const API_ENDPOINT = 'https://api.mojidict.com/parse/functions'
 
@@ -36,18 +36,18 @@ const request = (method, body) => fetch(`${API_ENDPOINT}/${method}`, {
 const search = cachedFn(searchText => request('search_v3', {
   searchText,
   needWords: true,
-  langEnv: "zh-CN_ja",
+  langEnv: 'zh-CN_ja'
 }))
 
 const fetchWord = cachedFn(wordId => request('fetchWord_v2', { wordId }))
-//#endregion
+// #endregion
 
-chrome.runtime.onConnect.addListener(function(port) {
+chrome.runtime.onConnect.addListener(function (port) {
   if (!port.name === 'mojidict-api') {
     return
   }
 
-  port.onMessage.addListener(function({ messageId, type, payload }) {
+  port.onMessage.addListener(function ({ messageId, type, payload }) {
     if (type === 'search') {
       search(payload.searchText).then(result => {
         port.postMessage({ messageId, result })

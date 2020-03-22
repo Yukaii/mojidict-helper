@@ -1,3 +1,9 @@
+.mojidict-helper-card-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .mojidict-helper-card {
   background-color: white;
   color: black;
@@ -7,7 +13,8 @@
   min-width: 150px;
   max-height: 350px;
   overflow-y: auto;
-  position: fixed;
+  position: absolute;
+  z-index: 999999999;
 
   border: 1px solid #ebeef5;
   z-index: 2000;
