@@ -108,6 +108,21 @@ async function updateWordCard (card, wordId, selectionText) {
   container.outerHTML = html
 }
 
+function updateWordCardWithEmptyStats (card) {
+  const placeholder = card.querySelector('.loading-placeholder')
+  if (!placeholder) {
+    return
+  }
+
+  const container = card.querySelector('.word-detail-container')
+
+  placeholder.remove()
+
+  const p = document.createElement('p')
+  p.innerText = '找不到任何結果'
+  container.appendChild(p)
+}
+
 async function buildCardInner (wordId, selectionText) {
   const { result: { word, details, subdetails } } = await fetchWord(wordId)
 
@@ -165,8 +180,11 @@ async function searchFromSelection () {
       const wordId = res.result.searchResults[0].tarId
       updateWordCard(card, wordId, selectionText)
     } else {
+      updateWordCardWithEmptyStats(card)
       // TODO: render web search results
     }
+  } else {
+    updateWordCardWithEmptyStats(card)
   }
 }
 
