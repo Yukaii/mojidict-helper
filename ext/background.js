@@ -63,3 +63,13 @@ chrome.runtime.onConnect.addListener(function (port) {
     }
   })
 })
+
+chrome.contextMenus.create({
+  id: 'mojidict:searchSelection',
+  title: 'Search "%s" with MojiDict',
+  contexts: ['selection']
+})
+
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+  chrome.tabs.sendMessage(tab.id, { type: 'mojidict:searchSelection' })
+})

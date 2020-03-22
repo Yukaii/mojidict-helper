@@ -5,7 +5,8 @@
   "incognito": "split",
   "manifest_version": 2,
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "contextMenus"
   ],
   "content_scripts": [
     {

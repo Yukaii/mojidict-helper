@@ -122,7 +122,7 @@ function registerCardEvent (card) {
   document.addEventListener('click', dismiss)
 }
 
-document.addEventListener('dblclick', async () => {
+async function searchFromSelection () {
   const selection = window.getSelection()
   const selectionText = selection.toString()
 
@@ -134,5 +134,15 @@ document.addEventListener('dblclick', async () => {
     } else {
       // TODO: render web search results
     }
+  }
+}
+
+document.addEventListener('dblclick', async () => {
+  searchFromSelection()
+})
+
+chrome.runtime.onMessage.addListener(function ({ type }, sender, sendResponse) {
+  if (type === 'mojidict:searchSelection') {
+    searchFromSelection()
   }
 })
