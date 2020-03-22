@@ -2,6 +2,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,微软雅黑,Arial,sans-serif;
 }
 
 .mojidict-helper-card {
@@ -52,6 +53,13 @@
 }
 .mojidict-helper-card .close-button:after {
   transform: rotate(-45deg);
+}
+
+.mojidict-helper-card .loading-placeholder {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  background: url('chrome-extension://__MSG_@@extension_id__/images/loading.gif');
 }
 
 .mojidict-helper-card .word-detail-container {
@@ -108,6 +116,7 @@
   padding: 10px;
   width: 100%;
   text-align: center;
+  text-decoration: none;
 }
 
 .mojidict-helper-card .moji-button:first-child {
@@ -116,5 +125,4 @@
 
 .mojidict-helper-card .moji-button:hover {
   color: #ff4a42;
-  text-decoration: none;
 }

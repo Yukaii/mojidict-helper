@@ -61,24 +61,54 @@ function setupWordCardContainer () {
 
 setupWordCardContainer()
 
-async function showWordCard (wordId, rect) {
+let cardId = 0
+function showWordCard (selectionText, rect) {
   const container = getWordCardContainer()
 
-  const div = document.createElement('div')
+  const cardDiv = document.createElement('div')
 
-  div.className = 'mojidict-helper-card'
-  div.innerHTML = await buildCardInner(wordId)
-  div.style.cssText = `
+  cardDiv.className = 'mojidict-helper-card'
+  cardDiv.innerHTML = `
+    <div class="close-button"></div>
+
+    <div class="loading-container">
+      <div class="word-detail-container">
+        <div class="word-title" title="${selectionText}">${selectionText}</div>
+      </div>
+
+      <div class="loading-placeholder"></div>
+    </div>
+  `
+  // div.innerHTML = await buildCardInner(wordId)
+  cardDiv.style.cssText = `
     transform: translate(${rect.left + window.pageXOffset}px, ${rect.top + rect.height + window.pageYOffset}px);
   `
+  cardDiv.setAttribute('card-id', cardId++)
 
   container.innerHTML = ''
-  container.appendChild(div)
+  container.appendChild(cardDiv)
 
-  registerCardEvent(div)
+  registerCardEvent(cardDiv)
+
+  return cardDiv
 }
 
-async function buildCardInner (wordId) {
+async function updateWordCard (card, wordId, selectionText) {
+  if (!card) {
+    return
+  }
+
+  const html = await buildCardInner(wordId, selectionText)
+
+  const container = card.querySelector('.loading-container')
+  if (!container) {
+    return
+  }
+
+  container.outerHTML = html
+}
+
+async function buildCardInner (wordId, selectionText) {
   const { result: { word, details, subdetails } } = await fetchWord(wordId)
 
   const renderDetails = (details, subdetails) => details.map(detail => {
@@ -91,10 +121,8 @@ async function buildCardInner (wordId) {
   }).join('')
 
   return `
-    <div class="close-button"></div>
-
     <div class="word-detail-container">
-      <div class="word-title" title="${word.spell}">${word.spell}</div>
+      <div class="word-title" title="${selectionText}">${selectionText}</div>
       <div class="word-spell">${word.spell} | ${word.pron} ${word.accent}</div>
 
       <div class="word-detail">
@@ -117,7 +145,9 @@ function registerCardEvent (card) {
     }
   }
 
-  card.querySelector('.close-button').addEventListener('click', dismiss)
+  card.querySelector('.close-button').addEventListener('click', function () {
+    card.remove()
+  })
 
   document.addEventListener('click', dismiss)
 }
@@ -126,11 +156,14 @@ async function searchFromSelection () {
   const selection = window.getSelection()
   const selectionText = selection.toString()
 
+  const card = showWordCard(selectionText, selection.getRangeAt(0).getBoundingClientRect())
+
   const res = await search(selectionText)
 
   if (res.result && res.result.searchResults.length > 0) {
     if (res.result.searchResults.filter(r => r.type === 0).length > 0) {
-      showWordCard(res.result.searchResults[0].tarId, selection.getRangeAt(0).getBoundingClientRect())
+      const wordId = res.result.searchResults[0].tarId
+      updateWordCard(card, wordId, selectionText)
     } else {
       // TODO: render web search results
     }
