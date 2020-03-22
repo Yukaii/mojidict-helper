@@ -1,7 +1,7 @@
 {
   "name": "MOJiDict Helper",
   "description": "Show popup of Japanese vocabulary when double clicking on any text in webpage",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "incognito": "split",
   "manifest_version": 2,
   "permissions": [
