@@ -1,13 +1,13 @@
 // #region MojiDict API proxied with background script
 class Channel {
-  constructor (port) {
+  constructor(port) {
     this.messageId = 0
     this.promises = {}
 
     this._setupListener(port)
   }
 
-  send (type, payload) {
+  send(type, payload) {
     return new Promise((resolve, reject) => {
       const messageId = this.messageId
       this.promises[messageId] = { resolve, reject }
@@ -15,14 +15,14 @@ class Channel {
       this.port.postMessage({
         messageId,
         type,
-        payload
+        payload,
       })
 
       this.messageId += 1
     })
   }
 
-  _setupListener (port) {
+  _setupListener(port) {
     this.port = chrome.runtime.connect({ name: port })
     this.port.onMessage.addListener(({ messageId, result, error }) => {
       const promise = this.promises[messageId]
@@ -42,15 +42,15 @@ class Channel {
 
 const channel = new Channel('mojidict-api')
 
-const search = searchText => channel.send('search', { searchText })
-const fetchWord = wordId => channel.send('fetchWord', { wordId })
+const search = (searchText) => channel.send('search', { searchText })
+const fetchWord = (wordId) => channel.send('fetchWord', { wordId })
 // #endregion
 
-function getWordCardContainer () {
+function getWordCardContainer() {
   return document.querySelector('.mojidict-helper-card-container')
 }
 
-function setupWordCardContainer () {
+function setupWordCardContainer() {
   if (!getWordCardContainer()) {
     const div = document.createElement('div')
     div.className = 'mojidict-helper-card-container'
@@ -62,7 +62,7 @@ function setupWordCardContainer () {
 setupWordCardContainer()
 
 let cardId = 0
-function showWordCard (selectionText, rect) {
+function showWordCard(selectionText, rect) {
   const container = getWordCardContainer()
 
   const cardDiv = document.createElement('div')
@@ -81,7 +81,9 @@ function showWordCard (selectionText, rect) {
   `
   // div.innerHTML = await buildCardInner(wordId)
   cardDiv.style.cssText = `
-    transform: translate(${rect.left + window.pageXOffset}px, ${rect.top + rect.height + window.pageYOffset}px);
+    transform: translate(${rect.left + window.pageXOffset}px, ${
+    rect.top + rect.height + window.pageYOffset
+  }px);
   `
   cardDiv.setAttribute('card-id', cardId++)
 
@@ -93,7 +95,7 @@ function showWordCard (selectionText, rect) {
   return cardDiv
 }
 
-async function updateWordCard (card, wordId, selectionText) {
+async function updateWordCard(card, wordId, selectionText) {
   if (!card) {
     return
   }
@@ -108,7 +110,7 @@ async function updateWordCard (card, wordId, selectionText) {
   container.outerHTML = html
 }
 
-function updateWordCardWithEmptyStats (card) {
+function updateWordCardWithEmptyStats(card) {
   const placeholder = card.querySelector('.loading-placeholder')
   if (!placeholder) {
     return
@@ -123,17 +125,31 @@ function updateWordCardWithEmptyStats (card) {
   container.appendChild(p)
 }
 
-async function buildCardInner (wordId, selectionText) {
-  const { result: { word, details, subdetails } } = await fetchWord(wordId)
+async function buildCardInner(wordId, selectionText) {
+  const {
+    result: { word, details, subdetails },
+  } = await fetchWord(wordId)
 
-  const renderDetails = (details, subdetails) => details.map(detail => {
-    const subDetails = subdetails.filter(sub => sub.detailsId === detail.objectId)
+  const renderDetails = (details, subdetails) =>
+    details
+      .map((detail) => {
+        const subDetails = subdetails.filter(
+          (sub) => sub.detailsId === detail.objectId
+        )
 
-    return `<span class="detail-title" title="${detail.title}">${detail.title}</span>
+        return `<span class="detail-title" title="${detail.title}">${
+          detail.title
+        }</span>
 
-      ${subDetails.map((subdetail, index) => `<p title="${subdetail.title}">${index + 1}. ${subdetail.title}</p>`).join('')}
+      ${subDetails
+        .map(
+          (subdetail, index) =>
+            `<p title="${subdetail.title}">${index + 1}. ${subdetail.title}</p>`
+        )
+        .join('')}
       `
-  }).join('')
+      })
+      .join('')
 
   return `
     <div class="word-detail-container">
@@ -147,12 +163,14 @@ async function buildCardInner (wordId, selectionText) {
 
     <div class="button-group">
       <a class="moji-button" href="${`https://www.mojidict.com/zh-hant/details/${wordId}`}" target="_blank">詳情</a>
-      <a class="moji-button" href="${`https://www.mojidict.com/zh-hant/searchText/${encodeURIComponent(word.spell)}`}" target="_blank">更多</a>
+      <a class="moji-button" href="${`https://www.mojidict.com/zh-hant/searchText/${encodeURIComponent(
+        word.spell
+      )}`}" target="_blank">更多</a>
     </div>
   `
 }
 
-function registerCardEvent (card) {
+function registerCardEvent(card) {
   const dismiss = function (event) {
     if (!card.contains(event.target)) {
       card.remove()
@@ -167,16 +185,19 @@ function registerCardEvent (card) {
   document.addEventListener('click', dismiss)
 }
 
-async function searchFromSelection () {
+async function searchFromSelection() {
   const selection = window.getSelection()
   const selectionText = selection.toString()
 
-  const card = showWordCard(selectionText, selection.getRangeAt(0).getBoundingClientRect())
+  const card = showWordCard(
+    selectionText,
+    selection.getRangeAt(0).getBoundingClientRect()
+  )
 
   const res = await search(selectionText)
 
   if (res.result && res.result.searchResults.length > 0) {
-    if (res.result.searchResults.filter(r => r.type === 0).length > 0) {
+    if (res.result.searchResults.filter((r) => r.type === 0).length > 0) {
       const wordId = res.result.searchResults[0].tarId
       updateWordCard(card, wordId, selectionText)
     } else {
