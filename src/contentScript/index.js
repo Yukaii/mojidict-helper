@@ -1,19 +1,52 @@
-// If your extension doesn't need a content script, just leave this file empty
+import Channel from "../lib/channel"
+import React from 'react'
+import ReactDOM from 'react-dom'
+import ContentApp from "./ContentApp"
 
-// This is an example of a script that will run on every page. This can alter pages
-// Don't forget to change `matches` in manifest.json if you want to only change specific webpages
-printAllPageLinks();
+const channel = new Channel('mojidict-api')
 
-// This needs to be an export due to typescript implementation limitation of needing '--isolatedModules' tsconfig
-export function printAllPageLinks() {
-  const allLinks = Array.from(document.querySelectorAll('a')).map(
-    link => link.href
-  );
+const search = searchText => channel.send('search', { searchText })
+const fetchWord = wordId => channel.send('fetchWord', { wordId })
 
-  console.log('-'.repeat(30));
-  console.log(
-    `These are all ${allLinks.length} links on the current page that have been printed by the Sample Create React Extension`
-  );
-  console.log(allLinks);
-  console.log('-'.repeat(30));
+/*
+document.addEventListener('dblclick', async () => {
+  searchFromSelection()
+})
+
+chrome.runtime.onMessage.addListener(function ({ type }, sender, sendResponse) {
+  if (type === 'mojidict:searchSelection') {
+    searchFromSelection()
+  }
+})
+*/
+
+function getWordCardContainer () {
+  return document.querySelector('.mojidict-helper-card-container')
 }
+
+function findOrCreateWordCardContainer () {
+  const appContainer = getWordCardContainer()
+  if (appContainer) {
+    return appContainer
+  } else {
+    const div = document.createElement('div')
+    div.className = 'mojidict-helper-card-container'
+
+    document.body.appendChild(div)
+
+    return div
+  }
+}
+
+function setupReactApp () {
+  const appContainer = findOrCreateWordCardContainer()
+  
+  ReactDOM.render(
+    <React.StrictMode>
+      <ContentApp />
+    </React.StrictMode>,
+    appContainer
+  );
+}
+
+setupReactApp()
