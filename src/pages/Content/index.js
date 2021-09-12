@@ -1,14 +1,10 @@
-import Channel from '../../lib/channel'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import ContentApp from './ContentApp'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
-const channel = new Channel('mojidict-api')
+import store from '../../lib/store'
 
-const search = (searchText) => channel.send('search', { searchText })
-const fetchWord = (wordId) => channel.send('fetchWord', { wordId })
-
-/*
 document.addEventListener('dblclick', async () => {
   searchFromSelection()
 })
@@ -18,7 +14,23 @@ chrome.runtime.onMessage.addListener(function ({ type }, sender, sendResponse) {
     searchFromSelection()
   }
 })
-*/
+
+function searchFromSelection() {
+  const selection = window.getSelection()
+  const selectionText = selection?.toString().trim()
+  const range = selection?.getRangeAt(0)
+
+  if (!selectionText.length || !range) {
+    return
+  }
+
+  store.setState((state) => ({
+    ...state,
+    searchKeyword: selectionText,
+    selectionRect: range.getBoundingClientRect(),
+    showCard: true,
+  }))
+}
 
 function getWordCardContainer() {
   return document.querySelector('.mojidict-helper-card-container')
@@ -38,12 +50,16 @@ function findOrCreateWordCardContainer() {
   }
 }
 
+const queryClient = new QueryClient()
+
 function setupReactApp() {
   const appContainer = findOrCreateWordCardContainer()
 
   ReactDOM.render(
     <React.StrictMode>
-      <ContentApp />
+      <QueryClientProvider client={queryClient}>
+        <ContentApp />
+      </QueryClientProvider>
     </React.StrictMode>,
     appContainer
   )

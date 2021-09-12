@@ -105,6 +105,9 @@ var options = {
       .concat(['.js', '.jsx', '.ts', '.tsx', '.css']),
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      React: 'react',
+    }),
     new webpack.ProgressPlugin(),
     // clean the build folder
     new CleanWebpackPlugin({
@@ -170,7 +173,7 @@ var options = {
 }
 
 if (env.NODE_ENV === 'development') {
-  options.devtool = 'cheap-module-source-map'
+  options.devtool = 'inline-source-map'
 } else {
   options.optimization = {
     minimize: true,
