@@ -18,6 +18,8 @@ const storage = {
   },
 }
 
+const STORAGE_KEY = 'mojidict-app-storage'
+
 const store = create(
   persist(
     (set) => ({
@@ -32,7 +34,7 @@ const store = create(
         set((state) => ({ ...state, selectionRect })),
     }),
     {
-      name: 'mojidict-app-storage',
+      name: STORAGE_KEY,
       getStorage: () => storage,
     }
   )
@@ -55,3 +57,23 @@ export function searchFromSelection() {
     showCard: true,
   }))
 }
+
+const getStorageState = (rawState) => {
+  try {
+    return JSON.parse(rawState).state
+  } catch {
+    return {}
+  }
+}
+
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+  if (namespace === 'sync') {
+    if (changes[STORAGE_KEY]) {
+      const newState = getStorageState(changes[STORAGE_KEY].newValue)
+
+      if (JSON.stringify(newState) !== JSON.stringify(store.getState())) {
+        store.setState(newState)
+      }
+    }
+  }
+})
