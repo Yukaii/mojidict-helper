@@ -9,12 +9,12 @@
   "background": { "service_worker": "background.bundle.js" },
   "action": {
     "default_popup": "popup.html",
-    "default_icon": "img/icon48.png"
+    "default_icon": "icons/icon48.png"
   },
   "icons": {
-    "16": "img/icon16.png",
-    "48": "img/icon48.png",
-    "128": "img/icon128.png"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "content_scripts": [
     {
@@ -28,11 +28,12 @@
     {
       "resources": [
         "content.styles.css",
-        "img/icon128.png",
-        "img/icon48.png",
-        "img/icon16.png"
+        "icons/icon128.png",
+        "icons/icon48.png",
+        "icons/icon16.png",
+        "images/loading.gif"
       ],
-      "matches": []
+      "matches": ["<all_urls>"]
     }
   ]
 }
