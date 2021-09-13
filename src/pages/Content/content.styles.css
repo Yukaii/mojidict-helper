@@ -2,7 +2,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,微软雅黑,Arial,sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, 微软雅黑, Arial, sans-serif;
+  font-size: 16px;
 }
 
 .mojidict-helper-card {
@@ -20,10 +22,10 @@
   border: 1px solid #ebeef5;
   z-index: 2000;
   color: #606266;
-  line-height: 1.4;
+  line-height: 1.4em;
   text-align: justify;
   font-size: 14px;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   word-break: break-all;
 }
 
@@ -59,7 +61,6 @@
   width: 200px;
   height: 200px;
   margin: 0 auto;
-  background: url('chrome-extension://__MSG_@@extension_id__/images/loading.gif');
 }
 
 .mojidict-helper-card .word-detail-container {
@@ -96,6 +97,12 @@
   padding: 0 8px;
   color: #71757b;
   margin-bottom: 8px;
+}
+
+.mojidict-helper-card .no-result {
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
 }
 
 .mojidict-helper-card .button-group {

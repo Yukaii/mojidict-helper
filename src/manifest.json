@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "MOJiDict Helper",
+  "description": "Show popup of Japanese vocabulary when double clicking on any text in webpage",
+  "version": "2.0.0",
+  "incognito": "split",
+  "permissions": ["activeTab", "contextMenus"],
+  "options_page": "options.html",
+  "background": { "service_worker": "background.bundle.js" },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icons/icon48.png"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "exclude_matches": ["https://*.mojidict.com/*"],
+      "js": ["contentScript.bundle.js"],
+      "css": ["content.styles.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content.styles.css",
+        "icons/icon128.png",
+        "icons/icon48.png",
+        "icons/icon16.png",
+        "images/loading.gif"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
