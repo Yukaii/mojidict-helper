@@ -1,9 +1,12 @@
 import create from 'zustand'
 import { useQuery } from 'react-query'
-import { useRef, useEffect, useMemo, useCallback, Fragment } from 'react'
+import { useEffect, useMemo, useCallback, Fragment } from 'react'
 
-import store from '../../lib/store'
+import store, { searchFromSelection } from '../../lib/store'
 import { fetchWord, search } from './api'
+import useRect from '../../lib/hooks/useRect'
+import useEvent from '../../lib/hooks/useEvent'
+import useSelectionRect from '../../lib/hooks/useSelectionRect'
 
 const useStore = create(store)
 
@@ -13,20 +16,44 @@ export const ContentApp = () => {
     state.setShowCard,
   ])
   const searchKeyword = useStore((state) => state.searchKeyword)
-  const selectionRect = useStore((state) => state.selectionRect)
+
+  const canShowCard = showCard && searchKeyword
+
+  const [cardRect, cardContainerRef] = useRect()
+  const [selectionRect, updateSelectionReact] = useSelectionRect()
+
+  useEvent('resize', updateSelectionReact)
+  useEvent('scroll', updateSelectionReact, true)
+  useEvent('dblclick', () => {
+    searchFromSelection()
+    updateSelectionReact()
+  })
 
   const style = useMemo(() => {
-    if (selectionRect) {
-      const translateX = selectionRect.left + window.pageXOffset
-      const translateY =
-        selectionRect.top + selectionRect.height + window.pageYOffset
+    if (selectionRect && canShowCard) {
+      let translateX, translateY
+      const { right, left, top, bottom, height, width } = selectionRect
+      const { width: cardWidth = 300, height: cardHeight = 300 } = cardRect
+
+      if (left + width + cardWidth > window.innerWidth) {
+        translateX = right - window.pageXOffset - cardWidth
+      } else {
+        translateX = left + window.pageXOffset
+      }
+
+      if (top + cardHeight + height > window.innerHeight) {
+        translateY = bottom + window.pageYOffset - height - cardHeight
+      } else {
+        translateY = top + window.pageYOffset + height
+      }
+
       return {
         transform: `translate(${translateX}px, ${translateY}px`,
       }
     } else {
       return {}
     }
-  }, [selectionRect])
+  }, [selectionRect, cardRect, canShowCard])
 
   const { data = null, isLoading } = useQuery(
     ['searchKeyword', searchKeyword],
@@ -56,7 +83,11 @@ export const ContentApp = () => {
     }
   )
 
-  const cardContainerRef = useRef()
+  useEffect(() => {
+    if (cardContainerRef.current && showCard) {
+      updateSelectionReact()
+    }
+  }, [cardContainerRef, updateSelectionReact, showCard])
 
   const onClickOutside = useCallback((e) => {
     if (!cardContainerRef.current?.contains(e.target)) {
@@ -103,7 +134,7 @@ export const ContentApp = () => {
 
   const word = data && data.word
 
-  if (!showCard || !searchKeyword) {
+  if (!canShowCard) {
     return null
   }
 

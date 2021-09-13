@@ -13,3 +13,19 @@ const store = create((set) => ({
 }))
 
 export default store
+
+export function searchFromSelection() {
+  const selection = window.getSelection()
+  const selectionText = selection.toString().trim()
+  const range = selection.rangeCount > 0 && selection.getRangeAt(0)
+
+  if (!selectionText.length || !range) {
+    return
+  }
+
+  store.setState((state) => ({
+    ...state,
+    searchKeyword: selectionText,
+    showCard: true,
+  }))
+}
