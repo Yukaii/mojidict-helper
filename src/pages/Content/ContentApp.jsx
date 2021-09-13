@@ -1,6 +1,6 @@
 import create from 'zustand'
 import { useQuery } from 'react-query'
-import { useRef, useEffect, useMemo, useCallback } from 'react'
+import { useRef, useEffect, useMemo, useCallback, Fragment } from 'react'
 
 import store from '../../lib/store'
 import { fetchWord, search } from './api'
@@ -40,10 +40,15 @@ export const ContentApp = () => {
         ) {
           const wordId = res.result.searchResults[0].tarId
 
-          return fetchWord(wordId)
+          const result = await fetchWord(wordId).then((r) => r?.result)
+
+          return {
+            ...result,
+            wordId,
+          }
         }
       } catch {
-        return []
+        return null
       }
     },
     {
@@ -69,14 +74,99 @@ export const ContentApp = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const renderDetails = useCallback(() => {
+    if (!data) {
+      return null
+    }
+
+    const { details, subdetails } = data
+
+    return details.map((detail) => {
+      const subDetails = subdetails.filter(
+        (sub) => sub.detailsId === detail.objectId
+      )
+
+      return (
+        <Fragment key={detail.objectId}>
+          <span className="detail-title" title={detail.title}>
+            {detail.title}
+          </span>
+          {subDetails.map((subdetail, index) => (
+            <p title={subdetail.title} key={index}>
+              {index + 1}. {subdetail.title}
+            </p>
+          ))}
+        </Fragment>
+      )
+    })
+  }, [data])
+
+  const word = data && data.word
+
   if (!showCard || !searchKeyword) {
     return null
   }
 
   return (
     <div style={style} className="mojidict-helper-card" ref={cardContainerRef}>
-      {isLoading && 'Loading....'}
-      the keyword: {searchKeyword}
+      <div className="close-button" onClick={() => setShowCard(false)} />
+
+      {word && (
+        <div className="word-detail-container">
+          <div className="word-title" title={searchKeyword}>
+            {searchKeyword}
+          </div>
+          <div className="word-spell">
+            {word.spell} | {word.pron} {word.accent}
+          </div>
+
+          <div className="word-detail">{renderDetails()}</div>
+
+          <div className="button-group">
+            <a
+              className="moji-button"
+              href={`https://www.mojidict.com/details/${data?.wordId}`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              詳情
+            </a>
+            <a
+              className="moji-button"
+              href={`https://www.mojidict.com/searchText/${encodeURIComponent(
+                word?.spell
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              更多
+            </a>
+          </div>
+        </div>
+      )}
+
+      {!word && (
+        <div className="loading-container">
+          <div className="word-detail-container">
+            <div className="word-title" title={searchKeyword}>
+              {searchKeyword}
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div
+              className="loading-placeholder"
+              style={{
+                backgroundImage: `url(${chrome.runtime.getURL(
+                  'images/loading.gif'
+                )})`,
+              }}
+            />
+          ) : (
+            <div className="no-result">沒有結果</div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

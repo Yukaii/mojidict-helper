@@ -61,7 +61,6 @@
   width: 200px;
   height: 200px;
   margin: 0 auto;
-  background: url('chrome-extension://__MSG_@@extension_id__/images/loading.gif');
 }
 
 .mojidict-helper-card .word-detail-container {
@@ -98,6 +97,12 @@
   padding: 0 8px;
   color: #71757b;
   margin-bottom: 8px;
+}
+
+.mojidict-helper-card .no-result {
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
 }
 
 .mojidict-helper-card .button-group {
