@@ -1,16 +1,42 @@
 import create from 'zustand/vanilla'
+import { persist } from 'zustand/middleware'
 
-const store = create((set) => ({
-  showCard: false,
-  searchKeyword: null,
-  selectionRect: null,
+const storage = {
+  getItem: async (name) => {
+    return new Promise((resolve) => {
+      chrome.storage.sync.get([name], function (result) {
+        resolve(result.key)
+      })
+    })
+  },
+  setItem: async (name, value) => {
+    return new Promise((resolve) => {
+      chrome.storage.sync.set({ [name]: value }, function () {
+        resolve()
+      })
+    })
+  },
+}
 
-  setShowCard: (showCard) => set((state) => ({ ...state, showCard })),
-  setSearchKeyword: (searchKeyword) =>
-    set((state) => ({ ...state, searchKeyword })),
-  setSelectionRect: (selectionRect) =>
-    set((state) => ({ ...state, selectionRect })),
-}))
+const store = create(
+  persist(
+    (set) => ({
+      showCard: false,
+      searchKeyword: null,
+      selectionRect: null,
+
+      setShowCard: (showCard) => set((state) => ({ ...state, showCard })),
+      setSearchKeyword: (searchKeyword) =>
+        set((state) => ({ ...state, searchKeyword })),
+      setSelectionRect: (selectionRect) =>
+        set((state) => ({ ...state, selectionRect })),
+    }),
+    {
+      name: 'mojidict-app-storage',
+      getStorage: () => storage,
+    }
+  )
+)
 
 export default store
 

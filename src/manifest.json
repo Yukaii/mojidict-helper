@@ -4,7 +4,7 @@
   "description": "Show popup of Japanese vocabulary when double clicking on any text in webpage",
   "version": "2.0.0",
   "incognito": "split",
-  "permissions": ["activeTab", "contextMenus"],
+  "permissions": ["activeTab", "contextMenus", "storage"],
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
   "action": {
