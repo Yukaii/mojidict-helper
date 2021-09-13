@@ -1,19 +1,3 @@
-const cachedFn = (fn) => {
-  const cachedResults = {}
-  const getCacheKey = (args) => args.map((arg) => JSON.stringify(arg)).join('-')
-
-  return async (...args) => {
-    const cacheKey = getCacheKey(args)
-    if (cachedResults[cacheKey]) {
-      return cachedResults[cacheKey]
-    } else {
-      const result = await fn.call(fn, ...args)
-      cachedResults[cacheKey] = result
-      return result
-    }
-  }
-}
-
 // #region MojiDict API
 const basePayload = {
   _ApplicationId: 'E62VyFVLMiW7kvbtVq3p',
@@ -34,15 +18,14 @@ const request = (method, body) =>
     }),
   }).then((r) => r.json())
 
-const search = cachedFn((searchText) =>
+const search = (searchText) =>
   request('search_v3', {
     searchText,
     needWords: true,
     langEnv: 'zh-CN_ja',
   })
-)
 
-const fetchWord = cachedFn((wordId) => request('fetchWord_v2', { wordId }))
+const fetchWord = (wordId) => request('fetchWord_v2', { wordId })
 // #endregion
 
 chrome.runtime.onConnect.addListener(function (port) {
@@ -71,10 +54,12 @@ chrome.runtime.onConnect.addListener(function (port) {
   })
 })
 
-chrome.contextMenus.create({
-  id: 'mojidict:searchSelection',
-  title: 'Search "%s" with MojiDict',
-  contexts: ['selection'],
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: 'mojidict:searchSelection',
+    title: 'Search "%s" with MojiDict',
+    contexts: ['selection'],
+  })
 })
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
