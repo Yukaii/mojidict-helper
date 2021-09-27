@@ -42,9 +42,9 @@ export const ContentApp = () => {
       }
 
       if (top + cardHeight + height > window.innerHeight) {
-        translateY = bottom + window.pageYOffset - height - cardHeight
+        translateY = bottom + window.pageYOffset - height - 5 - cardHeight
       } else {
-        translateY = top + window.pageYOffset + height
+        translateY = top + window.pageYOffset + height + 5
       }
 
       return {
