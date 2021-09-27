@@ -21,23 +21,23 @@ const storage = {
 const STORAGE_KEY = 'mojidict-app-storage'
 
 const store = create(
-  persist(
-    (set) => ({
-      showCard: false,
-      searchKeyword: null,
-      selectionRect: null,
+  // persist(
+  (set) => ({
+    showCard: false,
+    searchKeyword: null,
+    selectionRect: null,
 
-      setShowCard: (showCard) => set((state) => ({ ...state, showCard })),
-      setSearchKeyword: (searchKeyword) =>
-        set((state) => ({ ...state, searchKeyword })),
-      setSelectionRect: (selectionRect) =>
-        set((state) => ({ ...state, selectionRect })),
-    }),
-    {
-      name: STORAGE_KEY,
-      getStorage: () => storage,
-    }
-  )
+    setShowCard: (showCard) => set((state) => ({ ...state, showCard })),
+    setSearchKeyword: (searchKeyword) =>
+      set((state) => ({ ...state, searchKeyword })),
+    setSelectionRect: (selectionRect) =>
+      set((state) => ({ ...state, selectionRect })),
+  })
+  //     {
+  //       name: STORAGE_KEY,
+  //       getStorage: () => storage,
+  //     }
+  //   )
 )
 
 export default store
