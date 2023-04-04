@@ -1,27 +1,21 @@
-import create from 'zustand'
+import {create} from 'zustand'
 import { useQuery } from 'react-query'
 import { useEffect, useMemo, useCallback, Fragment } from 'react'
 
-import store, { searchFromSelection } from '../../lib/store'
+import  { searchFromSelection } from '../../lib/store'
 import { fetchWord, search } from './api'
 import useRect from '../../lib/hooks/useRect'
 import useEvent from '../../lib/hooks/useEvent'
 import useSelectionRect from '../../lib/hooks/useSelectionRect'
-
-const useStore = create(store)
+import { setShowCard } from '../../lib/features/moji/mojiSlice'
+import { useSelector, useDispatch } from 'react-redux'
 
 export const ContentApp = () => {
-  const [showCard, setShowCard] = useStore((state) => [
-    state.showCard,
-    state.setShowCard,
-  ])
-  const searchKeyword = useStore((state) => state.searchKeyword)
-
+	const {showCard, searchKeyword} = useSelector((store) => store.moji)
+	const dispatch = useDispatch()
   const canShowCard = showCard && searchKeyword
-
   const [cardRect, cardContainerRef] = useRect()
   const [selectionRect, updateSelectionReact] = useSelectionRect()
-
   useEvent('resize', updateSelectionReact)
   useEvent('scroll', updateSelectionReact, true)
   useEvent('dblclick', () => {
@@ -91,7 +85,7 @@ export const ContentApp = () => {
 
   const onClickOutside = useCallback((e) => {
     if (!cardContainerRef.current?.contains(e.target)) {
-      setShowCard(false)
+			dispatch(setShowCard(false))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -140,7 +134,8 @@ export const ContentApp = () => {
 
   return (
     <div style={style} className="mojidict-helper-card" ref={cardContainerRef}>
-      <div className="close-button" onClick={() => setShowCard(false)} />
+      <div className="close-button" onClick={() => dispatch(setShowCard(false))
+} />
 
       {word && (
         <div className="word-detail-container">

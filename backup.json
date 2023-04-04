@@ -1,5 +1,5 @@
 {
-	"manifest_version": 3,
+	"manifest_version": 2,
 	"name": "MOJiDict Helper",
 	"description": "Show popup of Japanese vocabulary when double clicking on any text in webpage",
 	"version": "2.0.0",
@@ -11,7 +11,8 @@
 	],
 	"options_page": "options.html",
 	"background": {
-		"service_worker": "background.bundle.js"
+		"page": "background.html",
+		"persistent": true
 	},
 	"action": {
 		"default_popup": "popup.html",
@@ -41,19 +42,10 @@
 		}
 	],
 	"web_accessible_resources": [
-		{
-			"resources": [
-				"content.styles.css",
-				"icons/icon128.png",
-				"icons/icon48.png",
-				"icons/icon16.png",
-				"images/loading.gif"
-			],
-			"matches": [
-				"http://*/*",
-				"https://*/*",
-				"<all_urls>"
-			]
-		}
+		"content.styles.css",
+		"icons/icon128.png",
+		"icons/icon48.png",
+		"icons/icon16.png",
+		"images/loading.gif"
 	]
 }

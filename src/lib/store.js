@@ -1,61 +1,23 @@
-import create from 'zustand/vanilla'
-import { persist } from 'zustand/middleware'
+import { configureStore } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import mojiReducer from './features/moji/mojiSlice'
+import { setSearchKeyword, setShowCard } from './features/moji/mojiSlice'
 
-const storage = {
-  getItem: async (name) => {
-    return new Promise((resolve) => {
-      chrome.storage.sync.get([name], function (result) {
-        resolve(result.key)
-      })
-    })
+export const store = configureStore({
+  reducer: {
+    moji: mojiReducer,
   },
-  setItem: async (name, value) => {
-    return new Promise((resolve) => {
-      chrome.storage.sync.set({ [name]: value }, function () {
-        resolve()
-      })
-    })
-  },
-}
-
-const STORAGE_KEY = 'mojidict-app-storage'
-
-const store = create(
-  // persist(
-  (set) => ({
-    showCard: false,
-    searchKeyword: null,
-    selectionRect: null,
-
-    setShowCard: (showCard) => set((state) => ({ ...state, showCard })),
-    setSearchKeyword: (searchKeyword) =>
-      set((state) => ({ ...state, searchKeyword })),
-    setSelectionRect: (selectionRect) =>
-      set((state) => ({ ...state, selectionRect })),
-  })
-  //     {
-  //       name: STORAGE_KEY,
-  //       getStorage: () => storage,
-  //     }
-  //   )
-)
-
-export default store
+})
 
 export function searchFromSelection() {
   const selection = window.getSelection()
   const selectionText = selection.toString().trim()
   const range = selection.rangeCount > 0 && selection.getRangeAt(0)
-
   if (!selectionText.length || !range) {
     return
   }
-
-  store.setState((state) => ({
-    ...state,
-    searchKeyword: selectionText,
-    showCard: true,
-  }))
+  store.dispatch(setSearchKeyword(selectionText))
+  store.dispatch(setShowCard(true))
 }
 
 const getStorageState = (rawState) => {
@@ -66,14 +28,22 @@ const getStorageState = (rawState) => {
   }
 }
 
+const STORAGE_KEY = 'mojidict-app-storage'
+
 chrome.storage.onChanged.addListener(function (changes, namespace) {
   if (namespace === 'sync') {
     if (changes[STORAGE_KEY]) {
       const newState = getStorageState(changes[STORAGE_KEY].newValue)
-
-      if (JSON.stringify(newState) !== JSON.stringify(store.getState())) {
-        store.setState(newState)
+      // get moji store state from redux store by using useSelector
+      const mojiState = useSelector((state) => state.moji)
+      console.log('mojiState', mojiState)
+      if (JSON.stringify(newState) !== JSON.stringify(mojiState)) {
+        // sync to redux store
+        console.log('newState', newState)
       }
     }
   }
 })
+
+
+export default store;

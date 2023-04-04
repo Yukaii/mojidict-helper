@@ -1,9 +1,12 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from "react-dom/client";
 import ContentApp from './ContentApp'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import { searchFromSelection } from '../../lib/store'
+
+import store from '../../lib/store'
+import { Provider as ReduxProvider } from 'react-redux'
 
 chrome.runtime.onMessage.addListener(function ({ type }, sender, sendResponse) {
   if (type === 'mojidict:searchSelection') {
@@ -33,12 +36,14 @@ const queryClient = new QueryClient()
 
 function setupReactApp() {
   const appContainer = findOrCreateWordCardContainer()
-
-  ReactDOM.render(
+	const root = createRoot(appContainer);
+  root.render(
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <ContentApp />
-      </QueryClientProvider>
+      <ReduxProvider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <ContentApp />
+        </QueryClientProvider>
+      </ReduxProvider>
     </React.StrictMode>,
     appContainer
   )
